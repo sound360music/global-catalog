@@ -5,51 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>SOUND360 Global Catalog Dashboard</title>
   
-  <!-- 구글 머티리얼 아이콘 (돋보기 아이콘용) -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   
   <style>
-    :root {
-      /* 🔥 핵심 포인트: 이 숫자를 수정해서 시트를 딱 맞추세요.
-         - 오른쪽 끝이 잘리면 숫자를 늘리세요 (예: 1800, 2000)
-         - 오른쪽에 여백이 너무 많이 남으면 숫자를 줄이세요 (예: 1400, 1200) */
-      --sheet-target-width: 1600;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     
     html, body {
       width: 100%;
       height: 100%;
-      overflow: hidden; /* 브라우저 자체 스크롤 완전 차단 */
+      overflow: hidden; /* HTML 자체의 바깥 스크롤 방지 */
     }
     
-    .iframe-container {
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden; /* 가로 스크롤을 막는 방어벽 */
-      position: relative;
-    }
-    
-    iframe {
-      /* 1. iframe을 브라우저 크기와 상관없이 시트가 안 잘릴 만큼 넓게 고정합니다. */
-      width: calc(var(--sheet-target-width) * 1px);
-      
-      /* 2. 넓게 펼쳐진 iframe을 현재 브라우저 창 폭(100vw)에 맞춰서 비율대로 축소(Zoom-out) 시킵니다. */
-      transform-origin: top left;
-      transform: scale(calc(100vw / var(--sheet-target-width)));
-      
-      /* 3. 축소되면서 짧아진 세로 길이를 역으로 길게 늘려주어 화면 아래쪽이 비지 않게 합니다. */
-      height: calc(100vh * (var(--sheet-target-width) / 100vw));
+    #dashboard-frame {
       border: 0;
       display: block;
+      /* 스크립트가 로드되기 전 기본값 */
+      width: 100vw;
+      height: 100vh; 
     }
 
-    /* 플로팅 검색 버튼 스타일 */
     .fab-btn {
       position: fixed;
       bottom: 30px;
@@ -80,20 +54,28 @@
 </head>
 <body>
   
-  <!-- iframe을 컨테이너로 감쌉니다 -->
-  <div class="iframe-container">
-    <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vReFgynBhkxg0gE6ECmMIwXeeb4AQJ-DqhDCpnDWYVIvAkeOSx2VBQgCoJQ0uUEJqGmEgok1SlPwRuK/pubhtml?widget=true&headers=false&chrome=false"></iframe>
-  </div>
+  <iframe id="dashboard-frame" src="https://docs.google.com/spreadsheets/d/e/2PACX-1vReFgynBhkxg0gE6ECmMIwXeeb4AQJ-DqhDCpnDWYVIvAkeOSx2VBQgCoJQ0uUEJqGmEgok1SlPwRuK/pubhtml?widget=true&headers=false&chrome=false"></iframe>
 
-  <!-- 플로팅 검색 버튼 -->
   <div class="fab-btn" onclick="openSearchPortal()" title="통합 검색 열기">
     <i class="material-icons">search</i>
   </div>
 
   <script>
+    // 브라우저 크기에 맞춰 iframe 크기를 동적으로 세팅하는 스크립트
+    function resizeIframe() {
+      const iframe = document.getElementById('dashboard-frame');
+      iframe.style.width = window.innerWidth + 'px';
+      iframe.style.height = window.innerHeight + 'px';
+    }
+
+    // 창 크기가 변할 때마다 즉시 재계산
+    window.addEventListener('resize', resizeIframe);
+    
+    // 초기 로드 시 1회 실행
+    resizeIframe();
+
     function openSearchPortal() {
       const scriptUrl = "https://script.google.com/a/macros/audioguyrecords.com/s/AKfycbyBVrgIAtTDZJIz6ikyLEgIdFG0LFY5JLtyABnxVPwtwCf0exbJW4uk7TrqJB6Ocp4d/exec";
-      
       const width = 1000;
       const height = 800;
       const left = (window.screen.width / 2) - (width / 2);
