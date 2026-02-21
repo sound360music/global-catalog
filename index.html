@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>SOUND360 Global Catalog Dashboard</title>
   
-  <!-- 구글 머티리얼 아이콘 (돋보기 아이콘용) -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   
   <style>
@@ -18,15 +17,43 @@
     html, body {
       width: 100%;
       height: 100%;
-      overflow: auto;
+      overflow: hidden; /* 바디 스크롤 방지 */
+      background-color: #f8f9fa; /* 로딩 시 배경색 */
     }
     
-    iframe {
+    /* Iframe을 감싸는 컨테이너 (비율 유지 및 넘침 방지) */
+    .iframe-container {
       width: 100%;
       height: 100vh;
+      overflow: auto; /* 세로 스크롤은 허용 */
+      position: relative;
+    }
+    
+    /* 
+      핵심 트릭: 
+      iframe 자체는 아주 넓게(예: 1200px) 고정해두고,
+      CSS transform으로 화면 폭에 맞춰 비율을 축소(Scale)합니다. 
+    */
+    iframe {
+      width: 1200px; /* 실제 시트 내용이 다 보이는 충분한 폭으로 설정 (상황에 따라 1400px 등으로 조절) */
+      height: 100vh;
       border: 0;
-      display: block;
-      overflow: hidden;
+      
+      /* 화면 폭이 1200px보다 작을 때, 1200px을 브라우저 폭(100vw)에 맞게 축소 */
+      transform-origin: top left;
+      transform: scale(calc(100vw / 1200)); 
+      
+      /* 축소 후 아래쪽 빈 공간을 없애기 위해 높이를 역으로 늘려줌 */
+      height: calc(100vh / (100vw / 1200)); 
+    }
+
+    /* 화면이 1200px보다 클 때는 축소하지 않음 */
+    @media (min-width: 1200px) {
+      iframe {
+        width: 100%;
+        transform: none;
+        height: 100vh;
+      }
     }
 
     /* 플로팅 검색 버튼 스타일 */
@@ -59,8 +86,11 @@
   </style>
 </head>
 <body>
-  <!-- 기존 대시보드 iframe -->
-  <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vReFgynBhkxg0gE6ECmMIwXeeb4AQJ-DqhDCpnDWYVIvAkeOSx2VBQgCoJQ0uUEJqGmEgok1SlPwRuK/pubhtml?widget=true&headers=false&chrome=false"></iframe>
+  
+  <div class="iframe-container">
+    <!-- 기존 대시보드 iframe -->
+    <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vReFgynBhkxg0gE6ECmMIwXeeb4AQJ-DqhDCpnDWYVIvAkeOSx2VBQgCoJQ0uUEJqGmEgok1SlPwRuK/pubhtml?widget=true&headers=false&chrome=false"></iframe>
+  </div>
 
   <!-- 플로팅 검색 버튼 -->
   <div class="fab-btn" onclick="openSearchPortal()" title="통합 검색 열기">
