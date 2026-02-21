@@ -5,9 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>SOUND360 Global Catalog Dashboard</title>
   
+  <!-- 구글 머티리얼 아이콘 (돋보기 아이콘용) -->
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   
   <style>
+    :root {
+      /* 🔥 핵심 포인트: 이 숫자를 수정해서 시트를 딱 맞추세요.
+         - 오른쪽 끝이 잘리면 숫자를 늘리세요 (예: 1800, 2000)
+         - 오른쪽에 여백이 너무 많이 남으면 숫자를 줄이세요 (예: 1400, 1200) */
+      --sheet-target-width: 1600;
+    }
+
     * {
       margin: 0;
       padding: 0;
@@ -17,43 +25,28 @@
     html, body {
       width: 100%;
       height: 100%;
-      overflow: hidden; /* 바디 스크롤 방지 */
-      background-color: #f8f9fa; /* 로딩 시 배경색 */
+      overflow: hidden; /* 브라우저 자체 스크롤 완전 차단 */
     }
     
-    /* Iframe을 감싸는 컨테이너 (비율 유지 및 넘침 방지) */
     .iframe-container {
-      width: 100%;
+      width: 100vw;
       height: 100vh;
-      overflow: auto; /* 세로 스크롤은 허용 */
+      overflow: hidden; /* 가로 스크롤을 막는 방어벽 */
       position: relative;
     }
     
-    /* 
-      핵심 트릭: 
-      iframe 자체는 아주 넓게(예: 1200px) 고정해두고,
-      CSS transform으로 화면 폭에 맞춰 비율을 축소(Scale)합니다. 
-    */
     iframe {
-      width: 1200px; /* 실제 시트 내용이 다 보이는 충분한 폭으로 설정 (상황에 따라 1400px 등으로 조절) */
-      height: 100vh;
-      border: 0;
+      /* 1. iframe을 브라우저 크기와 상관없이 시트가 안 잘릴 만큼 넓게 고정합니다. */
+      width: calc(var(--sheet-target-width) * 1px);
       
-      /* 화면 폭이 1200px보다 작을 때, 1200px을 브라우저 폭(100vw)에 맞게 축소 */
+      /* 2. 넓게 펼쳐진 iframe을 현재 브라우저 창 폭(100vw)에 맞춰서 비율대로 축소(Zoom-out) 시킵니다. */
       transform-origin: top left;
-      transform: scale(calc(100vw / 1200)); 
+      transform: scale(calc(100vw / var(--sheet-target-width)));
       
-      /* 축소 후 아래쪽 빈 공간을 없애기 위해 높이를 역으로 늘려줌 */
-      height: calc(100vh / (100vw / 1200)); 
-    }
-
-    /* 화면이 1200px보다 클 때는 축소하지 않음 */
-    @media (min-width: 1200px) {
-      iframe {
-        width: 100%;
-        transform: none;
-        height: 100vh;
-      }
+      /* 3. 축소되면서 짧아진 세로 길이를 역으로 길게 늘려주어 화면 아래쪽이 비지 않게 합니다. */
+      height: calc(100vh * (var(--sheet-target-width) / 100vw));
+      border: 0;
+      display: block;
     }
 
     /* 플로팅 검색 버튼 스타일 */
@@ -87,8 +80,8 @@
 </head>
 <body>
   
+  <!-- iframe을 컨테이너로 감쌉니다 -->
   <div class="iframe-container">
-    <!-- 기존 대시보드 iframe -->
     <iframe src="https://docs.google.com/spreadsheets/d/e/2PACX-1vReFgynBhkxg0gE6ECmMIwXeeb4AQJ-DqhDCpnDWYVIvAkeOSx2VBQgCoJQ0uUEJqGmEgok1SlPwRuK/pubhtml?widget=true&headers=false&chrome=false"></iframe>
   </div>
 
